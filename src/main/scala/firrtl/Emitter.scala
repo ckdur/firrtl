@@ -497,7 +497,7 @@ class VerilogEmitter extends SeqTransform with Emitter {
           case e => Seq(Seq(tabs, r, " <= ", e, ";"))
         }
       }
-      if (weq(init, r)) { // Synchronous Reset
+      if (weq(init, r) || weq(reset, UIntLiteral(0, IntWidth(1)))) { // Synchronous Reset / No Reset
         noResetAlwaysBlocks.getOrElseUpdate(clk, ArrayBuffer[Seq[Any]]()) ++= addUpdate(netlist(r), "")
       } else { // Asynchronous Reset
         assert(reset.tpe == AsyncResetType, "Error! Synchronous reset should have been removed!")
