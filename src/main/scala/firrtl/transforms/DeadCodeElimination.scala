@@ -136,7 +136,7 @@ class DeadCodeElimination extends Transform with ResolvedAnnotationPaths with Re
       case Print(_, _, args, clk, en) =>
         (args :+ clk :+ en).flatMap(getDeps(_)).foreach(ref => depGraph.addPairWithEdge(circuitSink, ref))
       case Block(stmts) => stmts.foreach(onStmt(_))
-      case ignore @ (_: IsInvalid | _: WDefInstance | EmptyStmt) => // do nothing
+      case ignore @ (_: IsInvalid | _: WDefInstance | EmptyStmt | _: Init) => // do nothing (CKDUR: NOTE: Init do not need dependency annotation)
       case other => throw new Exception(s"Unexpected Statement $other")
     }
 
@@ -237,6 +237,13 @@ class DeadCodeElimination extends Transform with ResolvedAnnotationPaths with Re
           else decl
         case print: Print => deleteIfNotEnabled(print, print.en)
         case stop: Stop => deleteIfNotEnabled(stop, stop.en)
+        case in: Init => // This deletes the init, if the node is also deleted
+          val node = LogicNode(mod.name, in.name)
+          if (deadNodes.contains(node)) {
+            renames.delete(in.name)
+            EmptyStmt
+          }
+          else in
         case con: Connect =>
           val node = getDeps(con.loc) match { case Seq(elt) => elt }
           if (deadNodes.contains(node)) EmptyStmt else con
@@ -341,7 +348,7 @@ class DeadCodeElimination extends Transform with ResolvedAnnotationPaths with Re
 
   def execute(state: CircuitState): CircuitState = {
     val dontTouches: Seq[LogicNode] = state.annotations.collect {
-      case DontTouchAnnotation(component: ReferenceTarget) if component.isLocal => LogicNode(component)
+      case DontTouchAnnotation(component) => LogicNode(component)
     }
     val doTouchExtMods: Seq[String] = state.annotations.collect {
       case OptimizableExtModuleAnnotation(ModuleName(name, _)) => name

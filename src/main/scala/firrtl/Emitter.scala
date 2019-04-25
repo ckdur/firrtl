@@ -528,6 +528,11 @@ class VerilogEmitter extends SeqTransform with Emitter {
       Seq(nx, "[", bitWidth(t) - 1, ":0]")
     }
 
+    // This is for initialize inits
+    def initialize_init(e: String, init: Expression) = {
+      initials += Seq(e, " = ", init, ";")
+    }
+
     def initialize(e: Expression, reset: Expression, init: Expression) = {
       initials += Seq("`ifdef RANDOMIZE_REG_INIT")
       initials += Seq(e, " = ", rand_string(e.tpe), ";")
@@ -757,6 +762,11 @@ class VerilogEmitter extends SeqTransform with Emitter {
           if (sx.readwriters.nonEmpty)
             throw EmitterException("All readwrite ports should be transformed into " +
               "read & write ports by previous passes")
+        case sx: Init =>
+          // Just add the initializer
+          // We dont care for the another one
+          // TODO: Delete the previous initializer
+          initialize_init(sx.name, sx.init)
         case _ =>
       }
     }

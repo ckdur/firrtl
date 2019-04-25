@@ -466,6 +466,20 @@ case object EmptyStmt extends Statement {
   def foreachString(f: String => Unit): Unit = Unit
   def foreachInfo(f: Info => Unit): Unit = Unit
 }
+// CKDUR: The init statement
+case class Init(info: Info, name: String, init: Expression) extends Statement with HasInfo {
+  def serialize: String = s"init $name : ${init.serialize}"
+  def mapStmt(f: Statement => Statement): Statement = this
+  def mapExpr(f: Expression => Expression): Statement = this
+  def mapType(f: Type => Type): Statement = this
+  def mapString(f: String => String): Statement = this
+  def mapInfo(f: Info => Info): Statement = this.copy(info = f(info))
+  def foreachStmt(f: Statement => Unit): Unit = Unit
+  def foreachExpr(f: Expression => Unit): Unit = Unit
+  def foreachType(f: Type => Unit): Unit = Unit
+  def foreachString(f: String => Unit): Unit = Unit
+  def foreachInfo(f: Info => Unit): Unit = f(info)
+}
 
 abstract class Width extends FirrtlNode {
   def +(x: Width): Width = (this, x) match {

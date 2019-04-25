@@ -276,6 +276,7 @@ class Visitor(infoMode: InfoMode) extends FIRRTLBaseVisitor[FirrtlNode] {
         case "attach" => Attach(info, ctx_exp map visitExp)
         case "printf(" => Print(info, visitStringLit(ctx.StringLit), ctx_exp.drop(2).map(visitExp),
           visitExp(ctx_exp(0)), visitExp(ctx_exp(1)))
+        case "init" => Init(info, ctx.id(0).getText, visitExp(ctx_exp(0)))
         case "skip" => EmptyStmt
       }
       // If we don't match on the first child, try the next one

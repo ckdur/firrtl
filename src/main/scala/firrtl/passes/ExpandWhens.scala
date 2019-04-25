@@ -140,6 +140,9 @@ object ExpandWhens extends Pass {
       case sx: Stop =>
         simlist += (if (weq(p, one)) sx else Stop(sx.info, sx.ret, sx.clk, AND(p, sx.en)))
         EmptyStmt
+      case sx: Init =>
+        simlist += sx // CKDUR: Just put this in the simlist
+        EmptyStmt
       // Expand conditionally, see comments below
       case sx: Conditionally =>
         /* 1) Recurse into conseq and alt with empty netlist, updated defaults, updated predicate

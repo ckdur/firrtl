@@ -1,0 +1,6 @@
+[
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"arbiter.arbiter.f_past_valid"
+  }
+]

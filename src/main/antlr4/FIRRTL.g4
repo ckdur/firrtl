@@ -110,6 +110,8 @@ stmt
   | 'printf(' exp exp StringLit ( exp)* ')' info?
   | 'skip' info?
   | 'attach' '(' exp+ ')' info?
+  | 'init' id ':' exp info?
+  | 'past' '(' exp UnsignedInt ')' info?
   ;
 
 memField
