@@ -57,6 +57,7 @@ object ConvertFixedToSInt extends Pass {
         case e: SIntLiteral => e
         case _ => e map updateExpType match {
           case ValidIf(cond, value, tpe) => ValidIf(cond, value, value.tpe)
+          case Past(value, steps, tpe) => Past(value, steps, value.tpe)
           case WRef(name, tpe, k, g) => WRef(name, types(name), k, g)
           case WSubField(exp, name, tpe, g) => WSubField(exp, name, field_type(exp.tpe, name), g)
           case WSubIndex(exp, value, tpe, g) => WSubIndex(exp, value, sub_type(exp.tpe), g)

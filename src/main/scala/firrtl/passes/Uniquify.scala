@@ -256,6 +256,7 @@ object Uniquify extends Transform {
           uniquifyNamesExp(e, nameMap.toMap)
         case e: Mux => e map uniquifyExp
         case e: ValidIf => e map uniquifyExp
+        case e: Past => e map uniquifyExp
         case (_: UIntLiteral | _: SIntLiteral) => e
         case e: DoPrim => e map uniquifyExp
       }

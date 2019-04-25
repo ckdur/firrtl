@@ -33,12 +33,12 @@ circuit arbiter :
     reg f_past_valid : UInt<1>, clock
     init f_past_valid : UInt<1>("h00")
     f_past_valid <= UInt<1>("h01")
-    printf(clock, UInt<1>("h01"), "f_past_valid: %x\n", f_past_valid)
     
     ; The past indicator. Enables the $past in verilog
-    ;reg past_reset : UInt<1>, clock
-    ;past_reset <= past(reset, 1)
-    
+    reg past_reset : UInt<1>, clock
+    past_reset <= past(reset, 1)
+
+    printf(clock, UInt<1>("h01"), "f_past_valid: %x, past_reset: %x\n", f_past_valid, past_reset)
     ; The assume and reset indicators.
     ;node _T_41 = and(f_past_valid, past_reset)
     ;node _T_42 = not(io.i_busy)

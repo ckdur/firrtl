@@ -155,6 +155,7 @@ object LowerTypes extends Transform {
     }
     case e: Mux => e map lowerTypesExp(memDataTypeMap, info, mname)
     case e: ValidIf => e map lowerTypesExp(memDataTypeMap, info, mname)
+    case e: Past => e map lowerTypesExp(memDataTypeMap, info, mname)
     case e: DoPrim => e map lowerTypesExp(memDataTypeMap, info, mname)
     case e @ (_: UIntLiteral | _: SIntLiteral) => e
   }

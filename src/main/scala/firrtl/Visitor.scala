@@ -317,6 +317,7 @@ class Visitor(infoMode: InfoMode) extends FIRRTLBaseVisitor[FirrtlNode] {
           }
         case "validif(" => ValidIf(visitExp(ctx_exp(0)), visitExp(ctx_exp(1)), UnknownType)
         case "mux(" => Mux(visitExp(ctx_exp(0)), visitExp(ctx_exp(1)), visitExp(ctx_exp(2)), UnknownType)
+        case "past(" => Past(visitExp(ctx_exp(0)), string2BigInt(ctx.intLit(0).getText), UnknownType)
         case _ =>
           ctx.getChild(1).getText match {
             case "." =>

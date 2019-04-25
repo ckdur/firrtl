@@ -68,7 +68,7 @@ class DeadCodeElimination extends Transform with ResolvedAnnotationPaths with Re
     def rec(e: Expression): Expression = {
       e match {
         case ref @ (_: WRef | _: WSubField) => refs += ref
-        case nested @ (_: Mux | _: DoPrim | _: ValidIf) => nested map rec
+        case nested @ (_: Mux | _: DoPrim | _: ValidIf | _: Past) => nested map rec
         case ignore @ (_: Literal) => // Do nothing
         case unexpected => throwInternalError()
       }

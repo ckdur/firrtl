@@ -169,6 +169,16 @@ case class ValidIf(cond: Expression, value: Expression, tpe: Type) extends Expre
   def foreachType(f: Type => Unit): Unit = f(tpe)
   def foreachWidth(f: Width => Unit): Unit = Unit
 }
+// CKDUR: The past Expression
+case class Past(value: Expression, steps: BigInt, tpe: Type) extends Expression {
+  def serialize: String = s"past(${value.serialize}, ${steps.toString})"
+  def mapExpr(f: Expression => Expression): Expression = Past(f(value), steps, tpe)
+  def mapType(f: Type => Type): Expression = this.copy(tpe = f(tpe))
+  def mapWidth(f: Width => Width): Expression = this
+  def foreachExpr(f: Expression => Unit): Unit = { f(value) }
+  def foreachType(f: Type => Unit): Unit = f(tpe)
+  def foreachWidth(f: Width => Unit): Unit = Unit
+}
 abstract class Literal extends Expression {
   val value: BigInt
   val width: Width
@@ -475,7 +485,7 @@ case class Init(info: Info, name: String, init: Expression) extends Statement wi
   def mapString(f: String => String): Statement = this
   def mapInfo(f: Info => Info): Statement = this.copy(info = f(info))
   def foreachStmt(f: Statement => Unit): Unit = Unit
-  def foreachExpr(f: Expression => Unit): Unit = Unit
+  def foreachExpr(f: Expression => Unit): Unit = { f(init) }
   def foreachType(f: Type => Unit): Unit = Unit
   def foreachString(f: String => Unit): Unit = Unit
   def foreachInfo(f: Info => Unit): Unit = f(info)

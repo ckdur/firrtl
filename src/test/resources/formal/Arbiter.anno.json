@@ -3,4 +3,8 @@
     "class":"firrtl.transforms.DontTouchAnnotation",
     "target":"arbiter.arbiter.f_past_valid"
   }
+  {
+    "class":"firrtl.transforms.DontTouchAnnotation",
+    "target":"arbiter.arbiter.past_reset"
+  }
 ]

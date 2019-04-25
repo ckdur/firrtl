@@ -111,7 +111,6 @@ stmt
   | 'skip' info?
   | 'attach' '(' exp+ ')' info?
   | 'init' id ':' exp info?
-  | 'past' '(' exp UnsignedInt ')' info?
   ;
 
 memField
@@ -173,6 +172,7 @@ exp
   | 'mux(' exp exp exp ')'
   | 'validif(' exp exp ')'
   | primop exp* intLit*  ')'
+  | 'past(' exp intLit ')'
   ;
 
 id
@@ -238,6 +238,7 @@ keywordAsId
   | 'read'
   | 'write'
   | 'rdwr'
+  | 'init'
   ;
 
 // Parentheses are added as part of name because semantics require no space between primop and open parentheses

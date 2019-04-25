@@ -175,6 +175,7 @@ class VerilogEmitter extends SeqTransform with Emitter {
         emit(Seq(e.cond," ? ",cast(e.tval)," : ",cast(e.fval)),top + 1)
       }
       case (e: ValidIf) => emit(Seq(cast(e.value)),top + 1)
+      case (e: Past) => emit(Seq("$past(", cast(e.value), ", ", e.steps, ")"),top + 1)
       case (e: WRef) => w write e.serialize
       case (e: WSubField) => w write LowerTypes.loweredName(e)
       case (e: WSubAccess) => w write s"${LowerTypes.loweredName(e.expr)}[${LowerTypes.loweredName(e.index)}]"
