@@ -36,6 +36,8 @@ object ConvertFixedToSInt extends Pass {
     val moduleTypes = mutable.HashMap[String,Type]()
     def onModule(m:DefModule) : DefModule = {
       val types = mutable.HashMap[String,Type]()
+      // CKDUR: Add the type for global_clock()
+      types("global_clock()") = ClockType
       def updateExpType(e:Expression): Expression = e match {
         case DoPrim(Mul, args, consts, tpe) => e map updateExpType
         case DoPrim(AsFixedPoint, args, consts, tpe) => DoPrim(AsSInt, args, Seq.empty, tpe) map updateExpType

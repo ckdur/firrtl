@@ -234,6 +234,18 @@ case class DoPrim(op: PrimOp, args: Seq[Expression], consts: Seq[BigInt], tpe: T
   def foreachType(f: Type => Unit): Unit = f(tpe)
   def foreachWidth(f: Width => Unit): Unit = Unit
 }
+// CKDUR: The global_clock Literal
+case class GlobalClock(value: BigInt = 0) extends Literal {
+  override val width: Width = IntWidth(1)
+  def tpe = ClockType
+  def serialize = s"global_clock()"
+  def mapExpr(f: Expression => Expression): Expression = this
+  def mapType(f: Type => Type): Expression = this
+  def mapWidth(f: Width => Width): Expression = this
+  def foreachExpr(f: Expression => Unit): Unit = Unit
+  def foreachType(f: Type => Unit): Unit = Unit
+  def foreachWidth(f: Width => Unit): Unit = f(width)
+}
 
 abstract class Statement extends FirrtlNode {
   def mapStmt(f: Statement => Statement): Statement
@@ -486,6 +498,48 @@ case class Init(info: Info, name: String, init: Expression) extends Statement wi
   def mapInfo(f: Info => Info): Statement = this.copy(info = f(info))
   def foreachStmt(f: Statement => Unit): Unit = Unit
   def foreachExpr(f: Expression => Unit): Unit = { f(init) }
+  def foreachType(f: Type => Unit): Unit = Unit
+  def foreachString(f: String => Unit): Unit = Unit
+  def foreachInfo(f: Info => Unit): Unit = f(info)
+}
+// CKDUR: The assert statement
+case class Assert(info: Info, value: Expression) extends Statement with HasInfo {
+  def serialize: String = s"assert(${value.serialize})"
+  def mapStmt(f: Statement => Statement): Statement = this
+  def mapExpr(f: Expression => Expression): Statement = Assert(info, f(value))
+  def mapType(f: Type => Type): Statement = this
+  def mapString(f: String => String): Statement = this
+  def mapInfo(f: Info => Info): Statement = this.copy(info = f(info))
+  def foreachStmt(f: Statement => Unit): Unit = Unit
+  def foreachExpr(f: Expression => Unit): Unit = { f(value) }
+  def foreachType(f: Type => Unit): Unit = Unit
+  def foreachString(f: String => Unit): Unit = Unit
+  def foreachInfo(f: Info => Unit): Unit = f(info)
+}
+// CKDUR: The assume statement
+case class Assume(info: Info, value: Expression) extends Statement with HasInfo {
+  def serialize: String = s"assume(${value.serialize})"
+  def mapStmt(f: Statement => Statement): Statement = this
+  def mapExpr(f: Expression => Expression): Statement = Assume(info, f(value))
+  def mapType(f: Type => Type): Statement = this
+  def mapString(f: String => String): Statement = this
+  def mapInfo(f: Info => Info): Statement = this.copy(info = f(info))
+  def foreachStmt(f: Statement => Unit): Unit = Unit
+  def foreachExpr(f: Expression => Unit): Unit = { f(value) }
+  def foreachType(f: Type => Unit): Unit = Unit
+  def foreachString(f: String => Unit): Unit = Unit
+  def foreachInfo(f: Info => Unit): Unit = f(info)
+}
+// CKDUR: The cover statement
+case class Cover(info: Info, value: Expression) extends Statement with HasInfo {
+  def serialize: String = s"cover(${value.serialize})"
+  def mapStmt(f: Statement => Statement): Statement = this
+  def mapExpr(f: Expression => Expression): Statement = Cover(info, f(value))
+  def mapType(f: Type => Type): Statement = this
+  def mapString(f: String => String): Statement = this
+  def mapInfo(f: Info => Info): Statement = this.copy(info = f(info))
+  def foreachStmt(f: Statement => Unit): Unit = Unit
+  def foreachExpr(f: Expression => Unit): Unit = { f(value) }
   def foreachType(f: Type => Unit): Unit = Unit
   def foreachString(f: String => Unit): Unit = Unit
   def foreachInfo(f: Info => Unit): Unit = f(info)

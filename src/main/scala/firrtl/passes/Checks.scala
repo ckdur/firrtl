@@ -144,12 +144,12 @@ object CheckHighForm extends Pass {
 
     def checkHighFormE(info: Info, mname: String, names: NameSet)(e: Expression): Unit = {
       e match {
-        case ex: WRef if !names(ex.name) =>
+        case ex: WRef if !names(ex.name) && ex.name != "global_clock()" =>
           errors.append(new UndeclaredReferenceException(info, mname, ex.name))
         case ex: UIntLiteral if ex.value < 0 =>
           errors.append(new NegUIntException(info, mname))
         case ex: DoPrim => checkHighFormPrimop(info, mname, ex)
-        case _: WRef | _: UIntLiteral | _: Mux | _: ValidIf =>
+        case _: WRef | _: UIntLiteral | _: Mux | _: ValidIf | _: GlobalClock =>
         case ex: WSubAccess => validSubexp(info, mname)(ex.expr)
         case ex => ex foreach validSubexp(info, mname)
       }

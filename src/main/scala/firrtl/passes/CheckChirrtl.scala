@@ -64,8 +64,8 @@ object CheckChirrtl extends Pass {
 
     def checkChirrtlE(info: Info, mname: String, names: NameSet)(e: Expression): Unit = {
       e match {
-        case _: DoPrim | _:Mux | _:ValidIf | _: UIntLiteral =>
-        case ex: Reference if !names(ex.name) =>
+        case _: DoPrim | _:Mux | _:ValidIf | _: UIntLiteral | _: GlobalClock =>
+        case ex: Reference if !names(ex.name) && ex.name != "global_clock()" =>
           errors append new UndeclaredReferenceException(info, mname, ex.name)
         case ex: SubAccess => validSubexp(info, mname)(ex.expr)
         case ex => ex.foreach(validSubexp(info, mname))

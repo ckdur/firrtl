@@ -1,3 +1,23 @@
+================================================
+========== CKDUR's FORMAL TODO LIST ============
+================================================
+Replace the initial statements in verilog with the Init statement if present
+
+Add check to Init statement
+* 1) Init only can be initialized by a constant
+* 2) The init statement must be after the register
+* 3) The init statement must bond to a register (not a wire)
+* 4) The bonding must exist
+
+Add check to Past statement
+* 1) The past number must not be negative nor zero
+* 2) Past must be assigned to a register (not a wire)
+
+Add the assert and assume statements
+Add the checks for assert and assume statements
+
+========== FIRRTL DEVELOPERS TODO LIST ============
+
 Add check passes
 Fix all test cases
 Add chirrtl support

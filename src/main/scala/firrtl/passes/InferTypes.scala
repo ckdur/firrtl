@@ -68,6 +68,8 @@ object InferTypes extends Pass {
 
     def infer_types(m: DefModule): DefModule = {
       val types = new TypeMap
+      // CKDUR: Put the default type for global_clock()
+      types("global_clock()") = ClockType
       m map infer_types_p(types) map infer_types_s(types)
     }
  

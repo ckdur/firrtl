@@ -41,6 +41,7 @@ object AnnotationUtils {
   val SerializedComponentName = """([a-zA-Z_][a-zA-Z_0-9\[\]\.~!@#$%^*\-+=?/]*)""".r
   def validComponentName(s: String): Boolean = s match {
     case SerializedComponentName(name) => true
+    case "global_clock()" => true // CKDUR: Whoops, I did it again
     case _ => false
   }
 

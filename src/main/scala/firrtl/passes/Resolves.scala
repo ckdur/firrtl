@@ -36,6 +36,8 @@ object ResolveKinds extends Pass {
 
   def resolve_kinds(m: DefModule): DefModule = {
     val kinds = new KindMap
+    // CKDUR: Put the global_clock() into all possible kinds
+    kinds("global_clock()") = WireKind
     (m map find_port(kinds)
        map find_stmt(kinds)
        map resolve_stmt(kinds))

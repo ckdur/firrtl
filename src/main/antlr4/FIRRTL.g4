@@ -111,6 +111,9 @@ stmt
   | 'skip' info?
   | 'attach' '(' exp+ ')' info?
   | 'init' id ':' exp info?
+  | 'assert(' exp ')' info?
+  | 'assume(' exp ')' info?
+  | 'cover(' exp ')' info?
   ;
 
 memField
@@ -173,6 +176,7 @@ exp
   | 'validif(' exp exp ')'
   | primop exp* intLit*  ')'
   | 'past(' exp intLit ')'
+  | 'global_clock()'
   ;
 
 id
@@ -239,6 +243,9 @@ keywordAsId
   | 'write'
   | 'rdwr'
   | 'init'
+  | 'assume'
+  | 'assert'
+  | 'cover'
   ;
 
 // Parentheses are added as part of name because semantics require no space between primop and open parentheses

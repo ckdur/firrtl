@@ -135,6 +135,13 @@ class DeadCodeElimination extends Transform with ResolvedAnnotationPaths with Re
         Seq(clk, en).flatMap(getDeps(_)).foreach(ref => depGraph.addPairWithEdge(circuitSink, ref))
       case Print(_, _, args, clk, en) =>
         (args :+ clk :+ en).flatMap(getDeps(_)).foreach(ref => depGraph.addPairWithEdge(circuitSink, ref))
+      // CKDUR: Asserts, assumes and covers just behave like a simconstruct. Dependency must be added
+      case Assert(_,_expr) =>
+        getDeps(_expr).foreach(ref => depGraph.addPairWithEdge(circuitSink, ref))
+      case Assume(_,_expr) =>
+        getDeps(_expr).foreach(ref => depGraph.addPairWithEdge(circuitSink, ref))
+      case Cover(_,_expr) =>
+        getDeps(_expr).foreach(ref => depGraph.addPairWithEdge(circuitSink, ref))
       case Block(stmts) => stmts.foreach(onStmt(_))
       case ignore @ (_: IsInvalid | _: WDefInstance | EmptyStmt | _: Init) => // do nothing (CKDUR: NOTE: Init do not need dependency annotation)
       case other => throw new Exception(s"Unexpected Statement $other")
@@ -237,7 +244,7 @@ class DeadCodeElimination extends Transform with ResolvedAnnotationPaths with Re
           else decl
         case print: Print => deleteIfNotEnabled(print, print.en)
         case stop: Stop => deleteIfNotEnabled(stop, stop.en)
-        case in: Init => // This deletes the init, if the node is also deleted
+        case in: Init => // CKDUR: This deletes the init, if the node is also deleted
           val node = LogicNode(mod.name, in.name)
           if (deadNodes.contains(node)) {
             renames.delete(in.name)
