@@ -3,11 +3,7 @@
 package firrtl.transforms
 
 import scala.collection.mutable
-import scala.collection.immutable.HashSet
-import scala.collection.immutable.HashMap
-import annotation.tailrec
 
-import Function.tupled
 
 import firrtl._
 import firrtl.ir._
@@ -17,8 +13,7 @@ import firrtl.annotations._
 import firrtl.Utils.throwInternalError
 import firrtl.graph.{MutableDiGraph,DiGraph}
 import firrtl.analyses.InstanceGraph
-import firrtl.options.RegisteredTransform
-import scopt.OptionParser
+import firrtl.options.{RegisteredTransform, ShellOption}
 
 object CheckCombLoops {
   class CombLoopException(info: Info, mname: String, cycle: Seq[String]) extends PassException(
@@ -69,11 +64,11 @@ class CheckCombLoops extends Transform with RegisteredTransform {
 
   import CheckCombLoops._
 
-  def addOptions(parser: OptionParser[AnnotationSeq]): Unit = parser
-    .opt[Unit]("no-check-comb-loops")
-    .action( (x, c) => c :+ DontCheckCombLoopsAnnotation )
-    .maxOccurs(1)
-    .text("Do NOT check for combinational loops (not recommended)")
+  val options = Seq(
+    new ShellOption[Unit](
+      longOption = "no-check-comb-loops",
+      toAnnotationSeq = (_: Unit) => Seq(DontCheckCombLoopsAnnotation),
+      helpText = "Disable combinational loop checking" ) )
 
   /*
    * A case class that represents a net in the circuit. This is
